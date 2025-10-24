@@ -1,0 +1,44 @@
+name: ORT Scan with OSSelot Integration
+
+on:
+  push:
+    branches:
+      - feature-osselot
+  pull_request:
+    branches:
+      - feature-osselot
+
+jobs:
+  ort-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Create ORT configuration file
+        run: |
+          echo "ort:" > ort.yml
+          echo "  curation:" >> ort.yml
+          echo "    sources:" >> ort.yml
+          echo "      - type: osselot" >> ort.yml
+          echo "        url: https://osselot.org/api/v1" >> ort.yml
+          echo "        enabled: true" >> ort.yml
+
+      - name: Run ORT scan with OSSelot
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/project \
+            ghcr.io/oss-review-toolkit/ort:latest \
+            analyze -i /project -o /project/ort-results
+
+      - name: Upload ORT results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ort-results
+          path: ort-results/
