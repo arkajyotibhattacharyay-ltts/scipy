@@ -38,7 +38,7 @@ jobs:
             analyze -i /project -o /project/ort-results
 
       - name: Upload ORT results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ort-results
           path: ort-results/
