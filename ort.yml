@@ -1,0 +1,6 @@
+ort:
+  curation:
+    sources:
+      - type: osselot
+        url: https://osselot.org/api/v1
+        enabled: true
